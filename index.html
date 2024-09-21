@@ -4,8 +4,75 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Diversity & Ethics Case Wheel</title>
-    <script src="https://cdn.tailwindcss.com"></script>
     <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+        #app {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            max-width: 400px;
+            width: 100%;
+        }
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+        #wheel {
+            width: 200px;
+            height: 200px;
+            border: 8px solid #9f7aea;
+            border-radius: 50%;
+            margin: 20px auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+        #wheelContent {
+            text-align: center;
+            padding: 10px;
+        }
+        button {
+            background-color: #9f7aea;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            display: block;
+            margin: 10px auto;
+        }
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        textarea {
+            width: 100%;
+            height: 100px;
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            resize: none;
+        }
+        #copiedAlert {
+            background-color: #e6fffa;
+            border: 1px solid #38b2ac;
+            color: #234e52;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+            display: none;
+        }
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
@@ -16,32 +83,15 @@
     </style>
 </head>
 <body>
-    <div id="app" class="max-w-md mx-auto bg-white shadow-md rounded-lg overflow-hidden">
-        <div class="p-4">
-            <h2 class="text-2xl font-bold text-center mb-4">Diversity & Ethics Case Wheel</h2>
-            <div class="flex flex-col items-center space-y-4">
-                <div id="wheel" class="w-64 h-64 rounded-full border-8 border-purple-300 flex items-center justify-center relative overflow-hidden">
-                    <div id="wheelContent" class="text-center p-4">
-                        Spin the wheel!
-                    </div>
-                </div>
-                <button id="spinButton" class="px-4 py-2 bg-purple-500 text-white rounded hover:bg-purple-600 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50 disabled:opacity-50">
-                    Spin Wheel
-                </button>
-                <div class="w-full mt-4">
-                    <textarea id="promptArea" readonly class="w-full h-32 p-2 text-sm border rounded resize-none"></textarea>
-                    <div class="flex justify-end mt-2">
-                        <button id="copyButton" class="px-4 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-50 disabled:opacity-50 flex items-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
-                            Copy
-                        </button>
-                    </div>
-                </div>
-                <div id="copiedAlert" class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative hidden" role="alert">
-                    <span class="block sm:inline">Prompt copied to clipboard!</span>
-                </div>
-            </div>
+    <div id="app">
+        <h2>Diversity & Ethics Case Wheel</h2>
+        <div id="wheel">
+            <div id="wheelContent">Spin the wheel!</div>
         </div>
+        <button id="spinButton">Spin Wheel</button>
+        <textarea id="promptArea" readonly></textarea>
+        <button id="copyButton">Copy</button>
+        <div id="copiedAlert">Prompt copied to clipboard!</div>
     </div>
 
     <script>
@@ -56,7 +106,21 @@
                 setting: "rural hospital",
                 ethical_dilemma: "institutional bias against LGBTQ+ patients"
             },
-            // ... (include all other cases from the previous version)
+            {
+                client: "a refugee dealing with cultural adjustment and trauma",
+                setting: "community mental health center",
+                ethical_dilemma: "lack of culturally appropriate mental health resources"
+            },
+            {
+                client: "a person with disabilities advocating for workplace accommodations",
+                setting: "corporate HR department",
+                ethical_dilemma: "company's resistance to making costly accommodations"
+            },
+            {
+                client: "a single parent from a minority background seeking childcare support",
+                setting: "social services agency",
+                ethical_dilemma: "limited culturally sensitive childcare options in the area"
+            }
         ];
 
         const wheel = document.getElementById('wheel');
@@ -72,7 +136,7 @@
         function spinWheel() {
             isSpinning = true;
             spinButton.disabled = true;
-            wheelContent.innerHTML = '<div class="animate-spin"><svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></div>';
+            wheelContent.innerHTML = '<div class="animate-spin">🔄</div>';
 
             setTimeout(() => {
                 const randomIndex = Math.floor(Math.random() * diversityCases.length);
@@ -93,9 +157,9 @@
         function copyToClipboard() {
             promptArea.select();
             document.execCommand('copy');
-            copiedAlert.classList.remove('hidden');
+            copiedAlert.style.display = 'block';
             setTimeout(() => {
-                copiedAlert.classList.add('hidden');
+                copiedAlert.style.display = 'none';
             }, 2000);
         }
 
