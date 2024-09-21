@@ -1,0 +1,185 @@
+import React, { useState, useRef } from 'react';
+
+const diversityCases = [
+  {
+    client: "an immigrant family navigating the education system",
+    setting: "public school",
+    ethical_dilemma: "pressure to underreport ESL needs due to budget constraints"
+  },
+  {
+    client: "an elderly LGBTQ+ individual seeking healthcare",
+    setting: "rural hospital",
+    ethical_dilemma: "institutional bias against LGBTQ+ patients"
+  },
+  {
+    client: "a refugee dealing with cultural adjustment and trauma",
+    setting: "community mental health center",
+    ethical_dilemma: "lack of culturally appropriate mental health resources"
+  },
+  {
+    client: "a person with disabilities advocating for workplace accommodations",
+    setting: "corporate HR department",
+    ethical_dilemma: "company's resistance to making costly accommodations"
+  },
+  {
+    client: "a single parent from a minority background seeking childcare support",
+    setting: "social services agency",
+    ethical_dilemma: "limited culturally sensitive childcare options in the area"
+  },
+  {
+    client: "a transgender youth accessing mental health services",
+    setting: "school counseling office",
+    ethical_dilemma: "school policy restricting gender-affirming care"
+  },
+  {
+    client: "an indigenous person preserving cultural practices while accessing social services",
+    setting: "government welfare office",
+    ethical_dilemma: "conflict between traditional healing and Western medical requirements"
+  },
+  {
+    client: "a Muslim family observing religious practices in a predominantly non-Muslim area",
+    setting: "public housing complex",
+    ethical_dilemma: "balancing religious accommodations with secular policies"
+  },
+  {
+    client: "an individual with limited English proficiency accessing legal aid",
+    setting: "non-profit legal clinic",
+    ethical_dilemma: "shortage of qualified interpreters affecting quality of service"
+  },
+  {
+    client: "a multiracial family dealing with identity issues",
+    setting: "family counseling center",
+    ethical_dilemma: "therapist's personal biases affecting treatment approach"
+  },
+  {
+    client: "a first-generation college student from a low-income background",
+    setting: "university financial aid office",
+    ethical_dilemma: "pressure to prioritize full-paying students over those needing aid"
+  },
+  {
+    client: "an individual with albinism facing discrimination and health concerns",
+    setting: "dermatology clinic",
+    ethical_dilemma: "lack of specialized knowledge about albinism among staff"
+  },
+  {
+    client: "a deaf person navigating employment opportunities",
+    setting: "job placement agency",
+    ethical_dilemma: "limited job options due to employer misconceptions about deaf individuals"
+  },
+  {
+    client: "a person with a non-visible disability seeking accommodation in higher education",
+    setting: "college disability services office",
+    ethical_dilemma: "stringent documentation requirements creating barriers to support"
+  },
+  {
+    client: "an interfaith couple planning end-of-life care",
+    setting: "hospice care facility",
+    ethical_dilemma: "conflicting religious beliefs about end-of-life practices"
+  },
+  {
+    client: "a former child soldier integrating into a new community",
+    setting: "refugee resettlement program",
+    ethical_dilemma: "balancing confidentiality with community safety concerns"
+  },
+  {
+    client: "a person with dwarfism advocating for accessible public spaces",
+    setting: "city planning department",
+    ethical_dilemma: "budget limitations vs. comprehensive accessibility modifications"
+  },
+  {
+    client: "a family practicing veganism for religious reasons in a school setting",
+    setting: "public school cafeteria",
+    ethical_dilemma: "accommodating dietary restrictions within limited food service options"
+  },
+  {
+    client: "an individual with face blindness navigating social services",
+    setting: "unemployment office",
+    ethical_dilemma: "adapting identification procedures for those with prosopagnosia"
+  },
+  {
+    client: "a polyamorous family seeking legal recognition and support",
+    setting: "family court",
+    ethical_dilemma: "navigating legal system not designed for non-traditional family structures"
+  }
+];
+
+function DiversityWheel() {
+  const [selectedCase, setSelectedCase] = useState(null);
+  const [isSpinning, setIsSpinning] = useState(false);
+  const [copied, setCopied] = useState(false);
+  const textAreaRef = useRef(null);
+
+  const spinWheel = () => {
+    setIsSpinning(true);
+    setTimeout(() => {
+      const randomIndex = Math.floor(Math.random() * diversityCases.length);
+      setSelectedCase(diversityCases[randomIndex]);
+      setIsSpinning(false);
+    }, 2000);
+  };
+
+  const getPrompt = () => {
+    if (!selectedCase) return '';
+    return `Please engage in a roleplay scenario where I am a social worker and you are ${selectedCase.client}. The setting is a ${selectedCase.setting}, and I am facing an ethical dilemma where ${selectedCase.ethical_dilemma}. I want to practice navigating this complex situation while maintaining cultural competence, sensitivity, and professional ethics.`;
+  };
+
+  const copyToClipboard = () => {
+    textAreaRef.current.select();
+    document.execCommand('copy');
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  return (
+    <div className="max-w-md mx-auto bg-white shadow-md rounded-lg overflow-hidden">
+      <div className="p-4">
+        <h2 className="text-2xl font-bold text-center mb-4">Diversity & Ethics Case Wheel</h2>
+        <div className="flex flex-col items-center space-y-4">
+          <div className="w-64 h-64 rounded-full border-8 border-purple-300 flex items-center justify-center relative overflow-hidden">
+            {isSpinning ? (
+              <div className="animate-spin">
+                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+              </div>
+            ) : (
+              <div className="text-center p-4">
+                {selectedCase ? selectedCase.client : "Spin the wheel!"}
+              </div>
+            )}
+          </div>
+          <button 
+            onClick={spinWheel} 
+            disabled={isSpinning}
+            className="px-4 py-2 bg-purple-500 text-white rounded hover:bg-purple-600 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50 disabled:opacity-50"
+          >
+            {isSpinning ? "Spinning..." : "Spin Wheel"}
+          </button>
+          <div className="w-full mt-4">
+            <textarea
+              ref={textAreaRef}
+              value={getPrompt()}
+              readOnly
+              className="w-full h-32 p-2 text-sm border rounded resize-none"
+            />
+            <div className="flex justify-end mt-2">
+              <button 
+                onClick={copyToClipboard} 
+                disabled={!selectedCase}
+                className="px-4 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-50 disabled:opacity-50 flex items-center"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-2"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+                Copy
+              </button>
+            </div>
+          </div>
+          {copied && (
+            <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative" role="alert">
+              <span className="block sm:inline">Prompt copied to clipboard!</span>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default DiversityWheel;
